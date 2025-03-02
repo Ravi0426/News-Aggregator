@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Aggregator</title>
+
+    <!-- Internal CSS Styles -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+
+        label {
+            font-size: 18px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .results {
+            margin-top: 30px;
+        }
+
+        .news-item {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+
+        .news-item h3 {
+            margin: 0;
+            font-size: 1.2em;
+        }
+
+        .news-item p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .news-item a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .news-item a:hover {
+            text-decoration: underline;
+        }
+
+        .no-results {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+            color: #888;
+        }
+    </style>
+
+</head>
+<body>
+
+<!-- Page Title -->
+<h1>News Aggregator</h1>
+
+<!-- Search and Country selection form -->
+<!-- Search Form -->
+<form method="GET" action="/news">
+    <label for="query">Search Term:</label>
+    <input type="text" id="query" name="query" placeholder="Search for news..." th:value="${query}"/>
+
+    <label for="country">Country:</label>
+    <select name="country" id="country">
+        <option value="" th:selected="${country == ''}">Select Country</option>
+        <option value="us" th:selected="${country == 'us'}">United States</option>
+        <option value="ind" th:selected="${country == 'ind'}">India</option>
+        <option value="gb" th:selected="${country == 'gb'}">United Kingdom</option>
+        <!-- Add more countries as needed -->
+    </select>
+
+    <label for="category">Category:</label>
+    <select name="category" id="category">
+        <option value="" th:selected="${category == ''}">Select Category</option>
+        <option value="general" th:selected="${category == 'general'}">General</option>
+        <option value="business" th:selected="${category == 'business'}">Business</option>
+        <option value="health" th:selected="${category == 'health'}">Health</option>
+        <option value="technology" th:selected="${category == 'technology'}">Technology</option>
+        <option value="entertainment" th:selected="${category == 'entertainment'}">Entertainment</option>
+        <!-- Add more categories as needed -->
+    </select>
+
+    <button type="submit">Get News</button>
+</form>
+
+<!-- Display Results if News Available -->
+<div class="results" th:if="${news}">
+    <h2><center>News Results for <span th:text="${country}"></span> : <center/></h2>
+
+    <!-- Loop through the news articles and display each item only once -->
+    <div th:each="article : ${news}">
+        <div class="news-item">
+            <h3 th:text="${article.title}">Title</h3>
+            <p th:text="${article.description}">Description</p>
+            <a th:href="${article.url}" target="_blank">Read more...</a>
+        </div>
+    </div>
+</div>
+
+<!-- Display message if no news results found -->
+<div th:if="${news == null or news.isEmpty()}">
+    <p class="no-results">No news available. Try searching with different keywords, country, or category.</p>
+</div>
+
+<!-- Display error message if any -->
+<div th:if="${message}">
+    <p th:text="${message}" style="color: red;"></p>
+</div>
+
+</body>
+</html>
